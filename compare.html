@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Algorithm Comparison — Disk Scheduling</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    main {
+      display: block;
+      padding: 24px 28px;
+      overflow-y: auto;
+      height: calc(100vh - 69px);
+    }
+    .compare-hint {
+      font-size: 0.7rem; color: var(--muted); margin-bottom: 24px;
+      line-height: 1.8; border: 1px solid var(--border);
+      padding: 12px 16px; border-radius: 4px; background: var(--bg2);
+    }
+    .compare-hint strong { color: var(--accent); }
+
+    .summary-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; margin-bottom: 28px;
+    }
+    .algo-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 20px; position: relative; overflow: hidden;
+    }
+    .algo-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 3px; background: var(--muted);
+    }
+    .algo-card.loaded::before { background: var(--accent); }
+    .algo-card.best::before   { background: var(--green); box-shadow: 0 0 12px var(--green); }
+    .algo-card.worst::before  { background: var(--accent2); }
+
+    .algo-card-name {
+      font-family: 'Orbitron', monospace; font-size: 0.85rem;
+      color: var(--accent); letter-spacing: 2px; margin-bottom: 14px;
+    }
+    .algo-card-seek {
+      font-family: 'Orbitron', monospace; font-size: 2.2rem;
+      color: var(--accent2); text-shadow: 0 0 20px rgba(255,107,53,0.4); margin-bottom: 6px;
+    }
+    .algo-card-seek.best-val { color: var(--green); text-shadow: 0 0 20px rgba(0,255,136,0.4); }
+    .algo-card-label { font-size: 0.58rem; letter-spacing: 2px; color: var(--muted); margin-bottom: 4px; }
+    .algo-card-meta  { font-size: 0.68rem; color: var(--muted); margin-top: 10px; line-height: 1.7; }
+    .algo-card-meta span { color: var(--text); }
+
+    .badge-big {
+      display: inline-block; padding: 3px 10px; border-radius: 3px;
+      font-size: 0.6rem; letter-spacing: 1.5px; margin-top: 6px;
+    }
+    .badge-big.best  { background: rgba(0,255,136,0.15); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
+    .badge-big.worst { background: rgba(255,107,53,0.15); color: #ff6b35; border: 1px solid rgba(255,107,53,0.3); }
+
+    .section-title {
+      font-family: 'Orbitron', monospace; font-size: 0.7rem; letter-spacing: 3px;
+      color: var(--muted); margin-bottom: 14px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .chart-section { margin-bottom: 28px; }
+
+    .bar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+    .bar-algo-label { width: 70px; font-size: 0.72rem; color: var(--muted); flex-shrink: 0; }
+    .bar-track {
+      flex: 1; background: rgba(30,48,72,0.5);
+      border-radius: 4px; height: 22px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; background: var(--accent); border-radius: 4px;
+      transition: width 1s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 0 10px rgba(0,212,255,0.35);
+      display: flex; align-items: center; padding-left: 10px; width: 0%;
+    }
+    .bar-fill.bar-best  { background: var(--green);   box-shadow: 0 0 10px rgba(0,255,136,0.4); }
+    .bar-fill.bar-worst { background: var(--accent2); box-shadow: 0 0 10px rgba(255,107,53,0.35); }
+    .bar-fill-label {
+      font-family: 'Orbitron', monospace; font-size: 0.65rem;
+      color: var(--bg); font-weight: bold; white-space: nowrap;
+    }
+    .bar-val {
+      width: 44px; font-family: 'Orbitron', monospace;
+      font-size: 0.7rem; color: var(--accent2); text-align: right; flex-shrink: 0;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,212,255,0.08); border: 1px solid var(--accent);
+      color: var(--accent); font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem; padding: 8px 18px; border-radius: 3px;
+      cursor: pointer; letter-spacing: 1px; text-decoration: none; transition: background 0.2s;
+    }
+    .back-btn:hover { background: rgba(0,212,255,0.18); }
+  </style>
+</head>
+<body>
+  <div class="scanline"></div>
+  <header>
+    <div class="header-left">
+      <span class="logo-icon">⬡</span>
+      <div>
+        <div class="title">ALGORITHM COMPARISON</div>
+        <div class="subtitle">Disk Scheduling — Side by Side</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <label class="load-btn" for="compareFile">
+        ⬆ Load compare_result.json
+        <input type="file" id="compareFile" accept=".json" onchange="loadCompare(event)" />
+      </label>
+      <div class="status-bar">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">Load compare_result.json to begin</span>
+      </div>
+      <a class="back-btn" href="index.html">← Back</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="compare-hint">
+      Select <strong>Option 5</strong> in the C++ program to run all algorithms at once.
+      Then click <strong>⬆ Load compare_result.json</strong> above — all results update instantly.
+      Each time you run Option 5 with new data, just reload the file.
+    </div>
+
+    <div class="section-title">SEEK TIME SUMMARY</div>
+    <div class="summary-row" id="summary-row"></div>
+
+    <div class="chart-section">
+      <div class="section-title">SEEK TIME COMPARISON</div>
+      <div id="bar-chart"></div>
+    </div>
+  </main>
+
+  <script src="compare.js"></script>
+</body>
+</html>

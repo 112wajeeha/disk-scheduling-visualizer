@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Disk Scheduling Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scanline"></div>
+
+  <header>
+    <div class="header-left">
+      <span class="logo-icon">⬡</span>
+      <div>
+        <div class="title">DISK SCHEDULING SIMULATOR</div>
+        <div class="subtitle">OS Algorithm Visualizer</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <label class="load-btn" for="jsonFile">
+        ⬆ Load result.json
+        <input type="file" id="jsonFile" accept=".json" onchange="loadFromFile(event)" />
+      </label>
+      <div class="status-bar">
+        <span class="dot" id="status-dot"></span>
+        <span id="status-text">Load result.json to begin</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- LEFT PANEL -->
+    <section class="left-panel">
+
+      <div class="card" id="card-algo">
+        <div class="card-label">ALGORITHM</div>
+        <div class="card-value" id="algo-name">—</div>
+      </div>
+
+      <div class="card" id="card-head">
+        <div class="card-label">INITIAL HEAD</div>
+        <div class="card-value" id="head-pos">—</div>
+      </div>
+
+      <div class="card" id="card-disk-size">
+        <div class="card-label">DISK SIZE</div>
+        <div class="card-value" id="disk-size">—</div>
+      </div>
+
+      <div class="card" id="card-direction">
+        <div class="card-label">DIRECTION</div>
+        <div class="card-value" id="direction">—</div>
+      </div>
+
+      <div class="card" id="card-range">
+        <div class="card-label">CYLINDER RANGE</div>
+        <div class="card-value" id="cyl-range">—</div>
+      </div>
+
+      <div class="card highlight" id="card-seek">
+        <div class="card-label">TOTAL SEEK TIME</div>
+        <div class="card-value large" id="seek-time">—</div>
+      </div>
+
+      <div class="card" id="card-requests">
+        <div class="card-label">REQUEST QUEUE</div>
+        <div class="tags" id="request-tags"><span class="placeholder">No data loaded</span></div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT PANEL -->
+    <section class="right-panel">
+
+      <div class="viz-header">
+        <span>DISK HEAD MOVEMENT</span>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="diskCanvas"></canvas>
+        <div class="no-data" id="no-data-msg">
+          Run the C++ program, then click<br/>
+          <strong>⬆ Load result.json</strong> above to visualize.
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="steps-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>FROM</th>
+              <th>TO</th>
+              <th>SEEK DISTANCE</th>
+            </tr>
+          </thead>
+          <tbody id="steps-body"></tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="visualizer.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "disk_size": 100,
+  "head": 56,
+  "direction": "left",
+  "requests": [54, 23, 89, 90, 32, 12],
+  "FCFS": { "total_seek": 178, "steps": [
+      { "from": 56, "to": 54, "distance": 2 },
+      { "from": 54, "to": 23, "distance": 31 },
+      { "from": 23, "to": 89, "distance": 66 },
+      { "from": 89, "to": 90, "distance": 1 },
+      { "from": 90, "to": 32, "distance": 58 },
+      { "from": 32, "to": 12, "distance": 20 }
+    ] },
+  "SCAN": { "total_seek": 146, "steps": [
+      { "from": 56, "to": 54, "distance": 2 },
+      { "from": 54, "to": 32, "distance": 22 },
+      { "from": 32, "to": 23, "distance": 9 },
+      { "from": 23, "to": 12, "distance": 11 },
+      { "from": 12, "to": 0, "distance": 12 },
+      { "from": 0, "to": 89, "distance": 89 },
+      { "from": 89, "to": 90, "distance": 1 }
+    ] },
+  "CSCAN": { "total_seek": 165, "steps": [
+      { "from": 56, "to": 54, "distance": 2 },
+      { "from": 54, "to": 32, "distance": 22 },
+      { "from": 32, "to": 23, "distance": 9 },
+      { "from": 23, "to": 12, "distance": 11 },
+      { "from": 12, "to": 0, "distance": 12 },
+      { "from": 0, "to": 99, "distance": 99 },
+      { "from": 99, "to": 90, "distance": 9 },
+      { "from": 90, "to": 89, "distance": 1 }
+    ] }
+}
