@@ -50,16 +50,16 @@ Disk Scheduling Visualizer is an Operating Systems project developed in C++ to s
 ## Project Visualization
 
 ### FCFS Visualization
-![FCFS Visualization](FCFS.png)
+![FCFS Visualization](screenshots/FCFS.png)
 
 ### SCAN Visualization
-![SCAN Visualization](SCAN.png)
+![SCAN Visualization](screenshots/SCAN.png)
 
 ### C-SCAN Visualization
-![C-SCAN Visualization](C-Scan.png)
+![C-SCAN Visualization](screenshots/C-Scan.png)
 
 ### Algorithm Comparison Dashboard
-![Algorithm Comparison](COMPARISON.png)
+![Algorithm Comparison](screenshots/COMPARISON.png)
 
 
 
